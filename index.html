@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tawan · Game Systems</title>
+<meta name="description" content="Keerati 'Tawan' Thakhieo, Technical Game Designer (Unreal Engine 5 Blueprint). Gameplay reels, playable systems from Forgotten and a Blueprint gallery.">
+<meta property="og:title" content="Tawan · Game Systems">
+<meta property="og:description" content="Technical Game Designer, Unreal Engine 5 Blueprint. Playable systems and Blueprint gallery.">
+<meta property="og:image" content="img/f_album.jpg">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#FAFAF7;
+  --surface:#F2F2EE;
+  --ink:#17181A;
+  --muted:#6A6D70;
+  --line:#E3E3DE;
+  --accent:#C4671B;
+  --blue:#2B7BB9;
+  --bad:#C0392B;
+  --good:#2E8B57;
+  --sans:"Hanken Grotesk","IBM Plex Sans Thai",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#111213;--surface:#1A1B1D;--ink:#ECECE8;--muted:#9C9FA3;--line:#2A2C2F;--accent:#EE9A4A;--blue:#5DA9E0;--bad:#E5675A;--good:#5CC08A}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#111213;--surface:#1A1B1D;--ink:#ECECE8;--muted:#9C9FA3;--line:#2A2C2F;--accent:#EE9A4A;--blue:#5DA9E0;--bad:#E5675A;--good:#5CC08A}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:16px/1.65 var(--sans);padding-inline:clamp(16px,5vw,64px);padding-block:0 80px}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.wrap{max-width:1040px;margin-inline:auto}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.02em;text-wrap:balance}
+h1{font-size:clamp(40px,6vw,64px);line-height:1.02;letter-spacing:-.035em}
+h2{font-size:clamp(26px,3.2vw,34px);line-height:1.15}
+h3{font-size:20px;line-height:1.3}
+p{margin:0;max-width:62ch}
+code{font:13px var(--mono);background:var(--surface);padding:1px 5px;border-radius:3px}
+.label{font:500 12px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:transparent;padding:7px 13px;border-radius:999px;font:500 14px var(--sans);cursor:pointer;text-decoration:none;transition:border-color .15s,background .15s}
+.btn:hover{border-color:var(--ink)}
+.btn.solid{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:2px}
+.seg button{border:0;background:transparent;padding:4px 11px;border-radius:999px;font:500 13px var(--sans);cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+input[type=range]{accent-color:var(--accent);width:100%}
+
+/* header */
+header.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:22px;flex-wrap:wrap}
+header.top nav{display:flex;gap:22px;flex-wrap:wrap}
+header.top nav a{text-decoration:none;color:var(--muted);font-size:14px}
+header.top nav a:hover{color:var(--ink)}
+.mark{font-weight:600;text-decoration:none}
+
+.intro{padding-block:clamp(48px,9vw,112px) clamp(40px,6vw,72px);display:grid;gap:22px}
+.intro h1 span{color:var(--muted)}
+.intro p{font-size:19px;color:var(--muted);max-width:56ch}
+.intro .links{display:flex;flex-wrap:wrap;gap:10px}
+
+section{padding-block:clamp(48px,7vw,88px);border-top:1px solid var(--line)}
+.head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:16px 48px;margin-bottom:36px}
+.head p{color:var(--muted)}
+.meta{display:grid;gap:4px;margin-top:14px;font-size:14px}
+.meta div{display:flex;gap:10px}
+.meta b{font:500 12px/1.9 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;min-width:64px}
+
+/* reels */
+.reels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.reel{display:grid;gap:4px;text-decoration:none;border:1px solid var(--line);border-radius:10px;padding:18px;transition:border-color .15s,transform .15s}
+.reel:hover{border-color:var(--ink);transform:translateY(-2px)}
+.reel b{font-weight:600;font-size:17px;display:flex;justify-content:space-between}
+.reel b i{font-style:normal;color:var(--accent)}
+.reel span{font:13px var(--mono);color:var(--muted)}
+
+/* systems explorer */
+.hero-img{margin:0 0 40px}
+.hero-img img{display:block;width:100%;height:auto;border-radius:10px;border:1px solid var(--line)}
+.hero-img figcaption{margin-top:8px;font-size:14px;color:var(--muted)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.tabs button{border:0;background:none;padding:10px 14px;font:500 15px var(--sans);color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.tabs button:hover{color:var(--ink)}
+.panel{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(24px,4vw,48px);padding-top:28px;align-items:start}
+.panel[hidden]{display:none!important}
+.demo{display:grid;gap:12px}
+.txt{display:grid;gap:14px;align-content:start}
+.txt ul{margin:0;padding-left:18px;display:grid;gap:8px}
+.txt li::marker{color:var(--muted)}
+.fix{border-left:2px solid var(--accent);padding:2px 0 2px 14px;display:grid;gap:4px}
+.fix .label{color:var(--accent)}
+.graphs{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.graphs .label{width:100%}
+.graphs button{font:13px var(--sans);border:1px solid var(--line);background:transparent;padding:3px 10px;border-radius:999px;cursor:pointer}
+.graphs button:hover{border-color:var(--blue);color:var(--blue)}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.readout{display:flex;flex-wrap:wrap;gap:4px 18px;font:13px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.readout b{color:var(--ink);font-weight:500}
+.log{font:12.5px/1.6 var(--mono);color:var(--muted);border-top:1px solid var(--line);padding-top:8px;min-height:80px;font-variant-numeric:tabular-nums}
+.log div:first-child{color:var(--ink)}
+.log .bad{color:var(--bad)}.log .good{color:var(--good)}
+.frame{position:relative;aspect-ratio:16/9.75;max-width:100%;overflow:hidden;border-radius:10px;background:#0c0c0c;border:1px solid var(--line)}
+.frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.meter{display:grid;gap:5px}
+.meter .row{display:flex;justify-content:space-between;font:12px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.meter .track{height:4px;background:var(--line);border-radius:4px;overflow:hidden}
+.meter .fill{height:100%;background:var(--ink);transition:width .2s linear}
+.meter .fill.low{background:var(--bad)}
+
+/* camcorder */
+#vpImg{transform-origin:52% 40%;will-change:transform}
+.fovtag{position:absolute;top:10px;right:12px;font:500 12px var(--mono);color:#fff;text-shadow:0 1px 2px #000}
+.pflash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+.album{display:flex;gap:8px;overflow-x:auto;min-height:60px}
+.album figure{margin:0;flex:0 0 86px;display:grid;gap:2px}
+.album .ph{width:86px;height:50px;border-radius:4px;background-size:cover;background-repeat:no-repeat;border:1px solid var(--line)}
+.album figcaption{font:11px var(--mono);color:var(--muted)}
+.album .empty{font-size:14px;color:var(--muted);align-self:center}
+
+/* sanity */
+.vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 25%,rgba(0,0,0,.95) 80%)}
+.frame.hit{animation:shake .45s linear}
+.frame .scare{position:absolute;inset:0;display:grid;place-items:center;background:rgba(150,0,0,.5);color:#fff;font:700 clamp(28px,5vw,44px) var(--sans);letter-spacing:.08em;opacity:0;pointer-events:none}
+.frame.hit .scare{animation:fade .9s ease-out}
+@keyframes fade{0%{opacity:1}100%{opacity:0}}
+@keyframes shake{0%,100%{transform:none}25%{transform:translate(-5px,3px)}50%{transform:translate(4px,-3px)}75%{transform:translate(-3px,-2px)}}
+
+/* ghost */
+#gc{width:100%;height:300px;display:block;border-radius:10px;border:1px solid var(--line);background:var(--surface);touch-action:pan-y;cursor:crosshair}
+#gc.shake{animation:shake .45s linear}
+
+/* door */
+.doorscene{position:relative;height:280px;display:grid;place-items:end center;border:1px solid var(--line);border-radius:10px;background:var(--surface);perspective:900px;overflow:hidden}
+.doorframe{position:relative;width:132px;height:216px;border:2px solid var(--ink);border-bottom:0;transform-style:preserve-3d;background:var(--bg)}
+.note{position:absolute;inset:0;display:grid;place-content:center;text-align:center;gap:2px;font:12px var(--mono);color:var(--muted)}
+.note b{font:600 22px var(--mono);color:var(--ink);letter-spacing:.2em}
+.door{position:absolute;inset:0;background:var(--surface);border:2px solid var(--ink);transform-origin:left center;transition:transform 1s cubic-bezier(.45,.05,.3,1);transform-style:preserve-3d}
+.door::before{content:"";position:absolute;inset:14px 14px 50%;border:1.5px solid var(--line)}
+.door::after{content:"";position:absolute;inset:calc(50% + 10px) 14px 14px;border:1.5px solid var(--line)}
+.door .handle{position:absolute;right:10px;top:104px;width:20px;height:5px;border-radius:3px;background:var(--ink);transform-origin:2px 2px;transition:transform .25s}
+.door .keyhole{position:absolute;right:17px;top:116px;width:6px;height:10px;background:var(--ink);border-radius:3px 3px 1px 1px}
+.door .key{position:absolute;right:-24px;top:115px;width:40px;height:13px;opacity:0;transform-origin:32px 6px;color:var(--accent)}
+.door.shake{animation:dshake .4s linear}
+@keyframes dshake{0%,100%{translate:0}25%{translate:-3px}50%{translate:3px}75%{translate:-2px}}
+.floor{position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ink)}
+.floorkey{position:absolute;left:14px;top:12px;font:12px var(--mono);color:var(--muted)}
+.you{position:absolute;right:14px;top:12px;font:12px var(--mono);color:var(--muted)}
+
+/* lock */
+.lockscene{position:relative;height:280px;display:grid;place-items:center;border:1px solid var(--line);border-radius:10px;background:var(--surface);overflow:hidden;transition:background .3s}
+.lockscene.focus{background:var(--bg)}
+.padlock{display:grid;justify-items:center;transition:transform .5s cubic-bezier(.3,.1,.2,1)}
+.lockscene.focus .padlock{transform:scale(1.12)}
+.shackle{width:96px;height:62px;border:10px solid var(--muted);border-bottom:0;border-radius:48px 48px 0 0;margin-bottom:-2px;transition:transform .5s cubic-bezier(.3,1.4,.5,1)}
+.padlock.open .shackle{transform:translateY(-18px)}
+.lockbody{background:var(--ink);border-radius:8px;padding:12px;display:flex;gap:6px}
+.wheel{position:relative;width:34px;height:66px;border-radius:4px;background:var(--bg);overflow:hidden;border:0;padding:0;cursor:pointer}
+.wheel:disabled{cursor:default;opacity:.75}
+.wheel .strip{position:absolute;left:0;right:0;top:50%;display:grid;font:500 18px/22px var(--mono);text-align:center;transform:translateY(-55px);color:var(--ink)}
+.wheel .strip span{height:22px}
+.wheel .strip span:not(:nth-child(3)){opacity:.3}
+.reward{position:absolute;inset:0;display:grid;place-content:center;gap:10px;text-align:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .4s .6s}
+.reward.show{opacity:1;pointer-events:auto}
+.reward b{font-size:24px;font-weight:600}
+
+/* also built */
+.also{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;margin-top:56px;padding-top:32px;border-top:1px solid var(--line)}
+.also div{display:grid;gap:6px;align-content:start}
+.also p{font-size:15px;color:var(--muted)}
+.also button{justify-self:start;border:0;background:none;padding:0;font:14px var(--sans);color:var(--blue);cursor:pointer}
+.also button:hover{text-decoration:underline}
+
+/* vault */
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.filters button{font:13px var(--sans);border:1px solid var(--line);background:transparent;color:var(--muted);padding:4px 11px;border-radius:999px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.filters button span{opacity:.6;margin-left:4px}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px 14px}
+.vcard{display:grid;gap:8px;text-align:left;background:none;border:0;padding:0;cursor:zoom-in}
+.vcard img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;object-position:left top;border-radius:8px;border:1px solid var(--line);background:#1d1d1d;transition:transform .15s}
+.vcard:hover img{transform:translateY(-2px)}
+.vcard .cls{font:12px var(--mono);color:var(--muted)}
+.vcard .nm{font-size:14px;line-height:1.35;margin-top:-4px}
+
+/* viewer */
+.viewer{position:fixed;inset:0;z-index:80;background:#151515;color:#EEE;display:grid;grid-template-rows:auto 1fr auto}
+.viewer[hidden]{display:none!important}
+.vbar,.vfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 16px;background:#0f0f0f;flex-wrap:wrap}
+.vbar{padding-top:calc(10px + env(safe-area-inset-top,0px))}
+.vfoot{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));font:12px var(--mono);color:#8a8a8a}
+.vbar .t{display:grid;min-width:0}
+.vbar .t span{font:12px var(--mono);color:#8a8a8a}
+.vbar .btn{color:#EEE;border-color:#333}
+.vbar .btn:hover{border-color:#EEE}
+.vbar .btn.solid{background:#EEE;color:#111;border-color:#EEE}
+.vcanvas{position:relative;overflow:hidden;cursor:grab;touch-action:none;background-color:#1D1D1D;background-image:linear-gradient(#262626 1px,transparent 1px),linear-gradient(90deg,#262626 1px,transparent 1px);background-size:32px 32px}
+.vcanvas.drag{cursor:grabbing}
+.vcanvas img{position:absolute;left:0;top:0;transform-origin:0 0;user-select:none;-webkit-user-drag:none;max-width:none}
+
+/* other work */
+.work{display:grid;gap:clamp(40px,6vw,64px)}
+.proj{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:16px 48px}
+.proj .imgs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.proj figure{margin:0;display:grid;gap:6px}
+.proj figure img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
+.proj figure.tall img{aspect-ratio:3/4}
+.proj figcaption{font-size:13px;color:var(--muted);line-height:1.4}
+.proj .txt p{color:var(--muted)}
+
+.tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.tools div{display:grid;gap:6px;align-content:start}
+.tools p{font-size:15px;color:var(--muted)}
+
+.contact{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:start}
+.contact>div{display:grid;gap:14px}
+.email{font-size:clamp(18px,2.6vw,26px);font-weight:500;letter-spacing:-.01em;user-select:all;word-break:break-all}
+.rows{display:grid;margin-top:10px}
+.rows a{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);text-decoration:none}
+.rows a:first-child{border-top:1px solid var(--line)}
+.rows a span{color:var(--muted);font:13px var(--mono)}
+.rows a:hover{color:var(--accent)}
+footer{padding-top:28px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+footer a{color:var(--muted)}
+
+@media (max-width:820px){
+  .head,.panel,.proj,.contact{grid-template-columns:1fr}
+  .reels,.tools{grid-template-columns:1fr}
+  .also{grid-template-columns:1fr 1fr}
+  header.top nav{gap:14px}
+}
+@media (max-width:480px){
+  .also,.proj .imgs{grid-template-columns:1fr 1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .frame.hit,#gc.shake,.door.shake,.frame.hit .scare{animation:none}
+  .door,.shackle,.padlock{transition-duration:.01s}
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="#top">Tawan</a>
+    <nav aria-label="Sections">
+      <a href="#forgotten">Forgotten</a>
+      <a href="#blueprints">Blueprints</a>
+      <a href="#work">Other work</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="intro">
+      <div class="label">Portfolio · Internship 2026</div>
+      <h1>Keerati “Tawan” Thakhieo<br><span>Technical Game Designer, Unreal Engine 5</span></h1>
+      <p>I build gameplay systems in Blueprint: player tools, horror events, puzzles and interaction. Multimedia Technology &amp; Animation, Mae Fah Luang University.</p>
+      <div class="links">
+        <a class="btn solid" href="#reels">Watch gameplay</a>
+        <a class="btn" href="#forgotten">Try the systems</a>
+        <a class="btn" href="#contact">Contact</a>
+      </div>
+    </div>
+
+    <section id="reels">
+      <div class="head"><h2>Gameplay reels</h2><p>Footage recorded from the builds. Opens on YouTube.</p></div>
+      <div class="reels">
+        <a class="reel" href="https://youtu.be/xRh0HuQXBjs" target="_blank" rel="noopener"><b>Reel 01 <i>↗</i></b><span>youtu.be/xRh0HuQXBjs</span></a>
+        <a class="reel" href="https://youtu.be/jQjqMY43B-U" target="_blank" rel="noopener"><b>Reel 02 <i>↗</i></b><span>youtu.be/jQjqMY43B-U</span></a>
+        <a class="reel" href="https://youtu.be/9BOuBFFGONY" target="_blank" rel="noopener"><b>Reel 03 <i>↗</i></b><span>youtu.be/9BOuBFFGONY</span></a>
+      </div>
+    </section>
+
+    <section id="forgotten">
+      <div class="head">
+        <div>
+          <div class="label">Senior project</div>
+          <h2 style="margin-top:8px">Forgotten</h2>
+          <div class="meta">
+            <div><b>Genre</b><span>First-person psychological horror / puzzle</span></div>
+            <div><b>Engine</b><span>Unreal Engine 5, Blueprint</span></div>
+            <div><b>Role</b><span>Gameplay systems, UI, Game Design Document</span></div>
+          </div>
+        </div>
+        <p>You explore a haunted mansion with a lantern and a camcorder. Light is a resource, the camera is how you find evidence, and sanity drops in the dark. Each tab below rebuilds one of my systems in the browser from its Blueprint logic, so you can try it and then open the real graph.</p>
+      </div>
+
+      <figure class="hero-img"><img src="img/f_album.jpg" alt="The in-game photo album in Forgotten, with photos sorted by room" width="1408" height="858"><figcaption>Photo album, filled by the player's camcorder shots and sorted by room</figcaption></figure>
+
+      <div class="tabs" role="tablist" aria-label="Systems">
+        <button role="tab" id="t-cam" aria-controls="p-cam" aria-selected="true">Camcorder</button>
+        <button role="tab" id="t-san" aria-controls="p-san" aria-selected="false" tabindex="-1">Sanity</button>
+        <button role="tab" id="t-ghost" aria-controls="p-ghost" aria-selected="false" tabindex="-1">Ghost</button>
+        <button role="tab" id="t-door" aria-controls="p-door" aria-selected="false" tabindex="-1">Door &amp; key</button>
+        <button role="tab" id="t-lock" aria-controls="p-lock" aria-selected="false" tabindex="-1">Combination lock</button>
+      </div>
+
+      <div class="panel" role="tabpanel" id="p-cam" aria-labelledby="t-cam">
+        <div class="demo">
+          <div class="frame" id="vp"><img src="img/f_camera.jpg" alt="Camcorder view with focus brackets in the test level" id="vpImg"><span class="fovtag" id="fovTag">FOV 90.0°</span><div class="pflash" id="pflash"></div></div>
+          <input type="range" id="zoom" min="0" max="1" step="0.067" value="0" aria-label="Zoom">
+          <div class="readout"><span>zoom <b id="zTxt">0.00</b></span><span>FOV <b id="fovTxt">90.0°</b></span><span>walk speed <b id="wsTxt">250</b></span></div>
+          <div class="controls">
+            <div class="seg" id="rooms"><button aria-pressed="true" data-room="Hallway">Hallway</button><button aria-pressed="false" data-room="Foodcount">Foodcount</button><button aria-pressed="false" data-room="LeaveRoom">LeaveRoom</button></div>
+            <button class="btn solid" id="snap">Take photo</button>
+          </div>
+          <div class="album" id="album"><span class="empty">Photos land here, labelled by room.</span></div>
+          <div class="readout"><span>rooms photographed <b id="roomsTxt">0/3</b></span><span>objective <b id="objTxt">02_Take3Photos</b></span></div>
+        </div>
+        <div class="txt">
+          <div class="label">BP_FirstPersonCharacter</div>
+          <h3>A camera that finds clues</h3>
+          <ul>
+            <li>Scroll on the view or drag the slider. <code>FInterp To</code> (speed 10) eases zoom toward the target, FOV lerps 90°→45° and walk speed drops.</li>
+            <li>A photo fires the flash, starts a cooldown and captures the room. A line trace counts it as evidence when it hits an <code>Evidence</code> actor, or a <code>HiddenClue</code> actor with night vision on.</li>
+            <li>Rooms go into a set with <code>AddUnique</code>. When every required room is in, the objective advances.</li>
+          </ul>
+          <div class="graphs" data-graphs="28,29,30,31,32,33,34,35"></div>
+        </div>
+      </div>
+
+      <div class="panel" role="tabpanel" id="p-san" aria-labelledby="t-san" hidden>
+        <div class="demo">
+          <div class="frame" id="scene"><img src="img/f_album.jpg" alt="Photo album screen in Forgotten" id="sceneImg"><div class="vig" id="vig"></div><div class="scare">JUMPSCARE</div></div>
+          <div class="meter"><div class="row"><span>sanity</span><span id="sanTxt">60 / 100</span></div><div class="track"><div class="fill" id="sanFill"></div></div></div>
+          <input type="range" id="sanRange" min="0" max="100" value="60" aria-label="Set sanity">
+          <div class="controls"><div class="seg" id="zone"><button aria-pressed="false" data-safe="1">In the light</button><button aria-pressed="true" data-safe="0">In the dark</button></div><button class="btn" id="rollNow">Roll now</button></div>
+          <div class="readout"><span>saturation <b id="satTxt">0.60</b></span><span>vignette <b id="vigTxt">0.80</b></span><span>next roll <b id="rollIn">5.0 s</b></span></div>
+          <div class="log" id="dlog" aria-live="polite"><div>Director waiting for the first roll.</div></div>
+        </div>
+        <div class="txt">
+          <div class="label">BP_FirstPersonCharacter</div>
+          <h3>Sanity that bends the screen</h3>
+          <ul>
+            <li>A looping 0.5 s timer updates sanity: +0.3 per tick in a safe zone, minus <code>Calculate Sanity Drain</code> in the dark, clamped, and cleared when full or empty.</li>
+            <li><code>Map Range Clamped</code> maps sanity 100→0 to saturation 1→0 and vignette 0→2.</li>
+            <li><code>Director_Jumpscare</code> rolls every 5 s. At 20 sanity or less: 5 or under on 1–100 is a jumpscare, otherwise 30 or under picks one of four events.</li>
+          </ul>
+          <p class="label">Drain rate in the demo is an example value.</p>
+          <div class="graphs" data-graphs="25,26,27"></div>
+        </div>
+      </div>
+
+      <div class="panel" role="tabpanel" id="p-ghost" aria-labelledby="t-ghost" hidden>
+        <div class="demo">
+          <canvas id="gc" tabindex="0" aria-label="Top-down view. Aim with the mouse or arrow keys; face the ghost to trigger it."></canvas>
+          <div class="readout"><span>dot <b id="gDot">0.00</b></span><span>distance <b id="gDist">0 u</b></span><span>rendered <b id="gRen">no</b></span><span>scares <b id="gCount">0</b></span></div>
+          <p class="label">Aim with the mouse. The ring is where its sound plays.</p>
+        </div>
+        <div class="txt">
+          <div class="label">BP_FakeGhostBack</div>
+          <h3>A scare that waits until you look</h3>
+          <ul>
+            <li>The ghost spawns on a random arc behind the player with its sound placed at that spot.</li>
+            <li>Each check reads distance (under 500 units), <code>Was Recently Rendered</code> and the dot product of the player's forward vector with the direction to the ghost.</li>
+            <li>It keeps turning toward the player, then fires a camera-shake jumpscare.</li>
+          </ul>
+          <div class="fix"><span class="label">Bug I fixed</span><p>The ghost fired at the wrong time because of linked bugs with the player Blueprint. I traced the checks one by one and fixed the visibility test.</p></div>
+          <div class="graphs" data-graphs="g1"></div>
+        </div>
+      </div>
+
+      <div class="panel" role="tabpanel" id="p-door" aria-labelledby="t-door" hidden>
+        <div class="demo">
+          <div class="doorscene">
+            <div class="doorframe">
+              <div class="note"><span>note behind the door</span><b>4017</b></div>
+              <div class="door" id="door"><span class="handle" id="handle"></span><span class="keyhole"></span>
+                <svg class="key" id="key3d" viewBox="0 0 44 14" aria-hidden="true"><circle cx="37" cy="7" r="5.5" fill="none" stroke="currentColor" stroke-width="2.5"/><rect x="0" y="6" width="31" height="2.5" fill="currentColor"/><rect x="4" y="8" width="2.5" height="4" fill="currentColor"/><rect x="10" y="8" width="2.5" height="3" fill="currentColor"/></svg>
+              </div>
+            </div>
+            <span class="floor"></span>
+            <span class="floorkey" id="floorkey">key on the floor</span>
+            <span class="you" id="you">you: in front</span>
+          </div>
+          <div class="controls">
+            <button class="btn" id="takeKey">Pick up key</button>
+            <button class="btn solid" id="useDoor">Use door</button>
+            <div class="seg" id="side"><button aria-pressed="true" data-side="1">In front</button><button aria-pressed="false" data-side="-1">Behind</button></div>
+            <div class="seg" id="build"><button aria-pressed="true" data-build="fixed">Fixed</button><button aria-pressed="false" data-build="old">Old build</button></div>
+            <button class="btn" id="resetDoor">Reset</button>
+          </div>
+          <div class="log" id="doorLog"><div>Try the door, then pick up the key.</div></div>
+        </div>
+        <div class="txt">
+          <div class="label">BP_Door · BP_Key</div>
+          <h3>Doors that know where you stand</h3>
+          <ul>
+            <li><code>CheckForKey</code> tests whether the player's keys <code>Contains</code> the door's Key ID. Without it the door shakes.</li>
+            <li>With it, two timelines slide the key in and turn it, then the key hides and <code>UnlockDoor</code> runs.</li>
+            <li>The dot product of the door's right vector and the direction to the player picks the swing side, so it always opens away from you.</li>
+          </ul>
+          <div class="fix"><span class="label">Bug I fixed</span><p>A fixed <code>Delay</code> let the door open before the key finished turning. <code>UnlockDoor</code> now runs from the timeline's <code>Finished</code> pin. Switch to "Old build" to see the bug.</p></div>
+          <div class="graphs" data-graphs="16,17,18,19,20,21,22,23,24"></div>
+        </div>
+      </div>
+
+      <div class="panel" role="tabpanel" id="p-lock" aria-labelledby="t-lock" hidden>
+        <div class="demo">
+          <div class="lockscene" id="lockscene">
+            <div class="padlock" id="padlock"><div class="shackle"></div><div class="lockbody" id="wheels"></div></div>
+            <div class="reward" id="reward"><b>Unlocked</b><span class="muted" style="font-size:14px">Bar slides, padlock drops with physics, reward appears, objective updates.</span><button class="btn" id="relock" style="justify-self:center">Lock again</button></div>
+          </div>
+          <div class="controls"><button class="btn solid" id="focusBtn">Inspect lock</button><span class="muted" id="lockState" style="font-size:14px">Wheels turn only while inspecting. Click the top or bottom of a wheel.</span></div>
+          <p class="muted" style="font-size:14px">The code is on a note behind the door in the previous tab. <button class="btn" id="reveal" style="padding:2px 10px;font-size:13px">Show code</button></p>
+        </div>
+        <div class="txt">
+          <div class="label">BP_Combination_Lock</div>
+          <h3>A lock you actually turn</h3>
+          <ul>
+            <li>Interacting blends to the lock's camera with <code>Set View Target with Blend</code>, turns off move and look input and shows the cursor.</li>
+            <li>A click becomes a world ray that traces the four wheels. Where it hits in the wheel's local space picks the direction.</li>
+            <li><code>RotateSelected</code> steps the digit with modulo 10 and a <code>WheelSpin</code> timeline turns it. <code>IsCodeCorrect</code> runs after each spin.</li>
+          </ul>
+          <div class="graphs" data-graphs="1,2,3,4,5,6,7,8,9,10"></div>
+        </div>
+      </div>
+
+      <div class="also">
+        <div><div class="label">Lantern</div><p>Oil drains on a looping 0.1 s timer while lit; the flame flickers when low.</p><button data-open="g4">Open graph</button></div>
+        <div><div class="label">Interaction</div><p>One base interactable, a Blueprint Interface and a custom-depth outline on hover.</p><button data-open-list="11,12,13,14,15,g2,g3">Open graphs</button></div>
+        <div><div class="label">Sprint &amp; footsteps</div><p>Separate drain and regen timers; footsteps read the physical material underfoot.</p><button data-open="g5">Open graph</button></div>
+        <div><div class="label">Design document</div><p>Core mechanics, level design and a 13-phase production plan.</p><button data-open="g6">Open page</button></div>
+      </div>
+    </section>
+
+    <section id="blueprints">
+      <div class="head"><h2>Blueprints</h2><p>Every graph from the systems above, grouped by class. Open one to drag, scroll or pinch around it like the editor.</p></div>
+      <div class="filters" id="filters" role="group" aria-label="Filter by class"></div>
+      <div class="vgrid" id="vgrid"></div>
+    </section>
+
+    <section id="work">
+      <div class="head"><h2>Other work</h2><p>A VR group project, a solo game and the characters I model for our projects.</p></div>
+      <div class="work">
+        <div class="proj">
+          <div class="txt"><div class="label">Group project · VR · Unity</div><h3>Back to the Ring</h3><p>VR boxing against an AI opponent that moves on a NavMesh and picks from jabs, crosses, hooks, uppercuts and blocks. I wrote the gameplay scripts for Group 08.</p></div>
+          <div class="imgs">
+            <figure><img src="img/v_fight.jpg" alt="AI boxers in the ring" loading="lazy"><figcaption>AI opponents</figcaption></figure>
+            <figure><img src="img/v_anim.jpg" alt="Animator state machine with punches and blocks" loading="lazy"><figcaption>Attack states</figcaption></figure>
+            <figure><img src="img/v_menu.jpg" alt="World-space main menu in VR" loading="lazy"><figcaption>World-space menu</figcaption></figure>
+          </div>
+        </div>
+        <div class="proj">
+          <div class="txt"><div class="label">Solo project · PC · Unity</div><h3>The Quest of Soul Gem</h3></div>
+          <p class="muted">A PC game I made alone, from concept through publishing: design, scripting, art, UI and the release build.</p>
+        </div>
+        <div class="proj">
+          <div class="txt"><div class="label">3D art</div><h3>Characters</h3><p>Bodies start from MetaHuman or base meshes. Clothing in Marvelous Designer, textures in Substance Painter, hair in Maya XGen, exported to FBX.</p></div>
+          <div class="imgs">
+            <figure class="tall"><img src="img/c_michael.jpg" alt="Michael, MetaHuman base" loading="lazy"><figcaption>Michael</figcaption></figure>
+            <figure class="tall"><img src="img/c_roeis.jpg" alt="Roeis in a long dress" loading="lazy"><figcaption>Roeis</figcaption></figure>
+            <figure class="tall"><img src="img/c_jacket.jpg" alt="Outfit patterns in Marvelous Designer" loading="lazy"><figcaption>Outfit patterns</figcaption></figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tools">
+      <div class="head"><h2>Tools</h2></div>
+      <div class="tools">
+        <div><h3>Systems</h3><p>UE5 Blueprint, UMG, Enhanced Input, Blueprint Interfaces, Unity XR Toolkit</p></div>
+        <div><h3>Art</h3><p>Maya, Blender, Marvelous Designer, Substance Painter, Premiere Pro</p></div>
+        <div><h3>Also</h3><p>Python, C# for Unity, design documents. Thai and English (intermediate).</p></div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="contact">
+        <div>
+          <h2>Looking for an internship</h2>
+          <p class="muted">Technical game design, gameplay design or Blueprint scripting on an Unreal Engine team.</p>
+        </div>
+        <div>
+          <div class="label">Email</div>
+          <span class="email" id="email">6631306010@lamduan.mfu.ac.th</span>
+          <div class="controls"><button class="btn solid" id="copyEmail">Copy email</button><span class="muted" id="copyMsg" aria-live="polite" style="font-size:14px"></span></div>
+          <div class="rows">
+            <a href="https://youtu.be/xRh0HuQXBjs" target="_blank" rel="noopener">Reel 01<span>YouTube ↗</span></a>
+            <a href="https://youtu.be/jQjqMY43B-U" target="_blank" rel="noopener">Reel 02<span>YouTube ↗</span></a>
+            <a href="https://youtu.be/9BOuBFFGONY" target="_blank" rel="noopener">Reel 03<span>YouTube ↗</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>Keerati Thakhieo · 2026</span><a href="#top">Back to top ↑</a></footer>
+</div>
+
+<div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="Blueprint viewer">
+  <div class="vbar">
+    <div class="t"><span id="vCls"></span><b id="vName"></b></div>
+    <div class="controls">
+      <button class="btn" id="vPrev" aria-label="Previous">←</button><button class="btn" id="vNext" aria-label="Next">→</button>
+      <button class="btn" id="vOut" aria-label="Zoom out">−</button><button class="btn" id="vIn" aria-label="Zoom in">+</button>
+      <button class="btn" id="vFit">Fit</button><button class="btn solid" id="vClose">Close</button>
+    </div>
+  </div>
+  <div class="vcanvas" id="vcanvas"><img id="vImg" alt=""></div>
+  <div class="vfoot"><span id="vIdx"></span><span>drag to pan · scroll or pinch to zoom · <span id="vZoom"></span></span></div>
+</div>
+
+<script>
+(()=>{
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)), lerp=(a,b,t)=>a+(b-a)*t, rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const flash=(el,p=.9)=>el.animate([{opacity:RM?.3:p},{opacity:0}],{duration:380,easing:'ease-out'});
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+/* tabs */
+const tabs=$$('[role=tab]');
+function select(t){tabs.forEach(x=>{const on=x===t;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;$('#'+x.getAttribute('aria-controls')).hidden=!on;});if(t.id==='t-ghost')gsize();}
+tabs.forEach((t,i)=>{t.onclick=()=>select(t);t.onkeydown=e=>{let j=null;if(e.key==='ArrowRight')j=(i+1)%tabs.length;if(e.key==='ArrowLeft')j=(i-1+tabs.length)%tabs.length;if(j!==null){e.preventDefault();tabs[j].focus();select(tabs[j]);}};});
+const segs=(id,fn)=>$$('#'+id+' button').forEach(b=>b.onclick=()=>{$$('#'+id+' button').forEach(x=>x.setAttribute('aria-pressed',x===b));fn(b);});
+
+/* camcorder */
+const vp=$('#vp'),vpImg=$('#vpImg'),zoomEl=$('#zoom');let zT=0,z=0,lt=performance.now();
+vp.addEventListener('wheel',e=>{e.preventDefault();zT=clamp(zT+(e.deltaY<0?.067:-.067),0,1);zoomEl.value=zT;},{passive:false});
+zoomEl.oninput=()=>zT=+zoomEl.value;
+const scaleOf=f=>Math.tan(Math.PI/4)/Math.tan(f*Math.PI/360);
+(function tick(t){const dt=Math.min(.05,Math.max(0,(t-lt)/1000));lt=t;z+=(zT-z)*Math.min(1,dt*10);if(Math.abs(zT-z)<.0005)z=zT;
+  const fov=lerp(90,45,z);vpImg.style.transform=`scale(${scaleOf(fov)})`;$('#fovTag').textContent=`FOV ${fov.toFixed(1)}°`;$('#fovTxt').textContent=fov.toFixed(1)+'°';$('#zTxt').textContent=z.toFixed(2);$('#wsTxt').textContent=Math.round(lerp(250,150,z));requestAnimationFrame(tick);})(lt);
+let room='Hallway',cool=false;const shot=new Set();
+segs('rooms',b=>room=b.dataset.room);
+$('#snap').onclick=()=>{if(cool)return;cool=true;const b=$('#snap');b.disabled=true;flash($('#pflash'));
+  const s=scaleOf(lerp(90,45,z)),al=$('#album');const em=al.querySelector('.empty');if(em)em.remove();
+  const f=document.createElement('figure');f.innerHTML=`<div class="ph" style="background-image:url(img/f_camera.jpg);background-size:${s*100}% auto;background-position:52% 40%"></div><figcaption>${room}</figcaption>`;al.prepend(f);while(al.children.length>8)al.lastChild.remove();
+  const before=shot.size;shot.add(room);$('#roomsTxt').textContent=shot.size+'/3';if(shot.size===3&&before===2)$('#objTxt').textContent='02_Take3Photos ✓';
+  setTimeout(()=>{cool=false;b.disabled=false;},1500);};
+
+/* sanity */
+let san=60,safe=false,next=5;const scene=$('#scene');
+function renderSan(){$('#sanFill').style.width=san+'%';$('#sanFill').classList.toggle('low',san<=20);$('#sanTxt').textContent=san.toFixed(1)+' / 100';
+  const sat=san/100,vig=2-2*san/100;$('#sceneImg').style.filter=`saturate(${sat})`;$('#vig').style.opacity=vig/2;$('#satTxt').textContent=sat.toFixed(2);$('#vigTxt').textContent=vig.toFixed(2);
+  if(document.activeElement!==$('#sanRange'))$('#sanRange').value=Math.round(san);}
+segs('zone',b=>safe=b.dataset.safe==='1');
+$('#sanRange').oninput=e=>{san=+e.target.value;renderSan();};
+setInterval(()=>{if($('#p-san').hidden)return;san=clamp(san+(safe?.3:-1.2),0,100);renderSan();},500);
+function dlog(h){const l=$('#dlog'),d=document.createElement('div');d.innerHTML=h;l.prepend(d);while(l.children.length>4)l.lastChild.remove();}
+function director(){const s=san.toFixed(0);
+  if(san>20){dlog(`sanity ${s}: above 20, nothing happens`);return;}
+  const r=rnd(1,100);if(r<=5){dlog(`<span class="bad">sanity ${s}: rolled ${r} ≤ 5, jumpscare</span>`);scene.classList.remove('hit');void scene.offsetWidth;scene.classList.add('hit');return;}
+  const r2=rnd(1,100);if(r2<=30)dlog(`<span class="good">sanity ${s}: rolled ${r}, then ${r2} ≤ 30, event ${rnd(1,4)}</span>`);else dlog(`sanity ${s}: rolled ${r}, then ${r2}, nothing`);}
+setInterval(()=>{if($('#p-san').hidden)return;next-=.1;if(next<=0){next=5;director();}$('#rollIn').textContent=next.toFixed(1)+' s';},100);
+$('#rollNow').onclick=()=>{next=5;director();};renderSan();
+
+/* ghost */
+const gc=$('#gc'),gx=gc.getContext('2d');let GW=0,GH=0,DPR=1,face=-Math.PI/2,ghost={a:Math.PI/2,d:380},scares=0,scareT=-1e9,col={},colT=-1e9;
+function gsize(){DPR=Math.min(2,devicePixelRatio||1);GW=gc.clientWidth;GH=gc.clientHeight;gc.width=GW*DPR;gc.height=GH*DPR;}
+addEventListener('resize',()=>{if(!$('#p-ghost').hidden)gsize();});
+const aimG=e=>{const r=gc.getBoundingClientRect();face=Math.atan2(e.clientY-r.top-GH/2,e.clientX-r.left-GW/2);};
+gc.addEventListener('pointermove',aimG);gc.addEventListener('pointerdown',aimG);
+gc.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){face-=.12;e.preventDefault()}if(e.key==='ArrowRight'){face+=.12;e.preventDefault()}});
+(function draw(t){requestAnimationFrame(draw);if($('#p-ghost').hidden||!GW)return;
+  if(t-colT>1000){col={ink:css('--ink'),muted:css('--muted'),line:css('--line'),acc:css('--accent'),bad:css('--bad'),bg:css('--bg')};colT=t;}
+  const c=gx;c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,GW,GH);const cx=GW/2,cy=GH/2,U=Math.min(GW,GH)*.44/500;
+  c.strokeStyle=col.line;c.lineWidth=1;c.setLineDash([3,5]);c.beginPath();c.arc(cx,cy,500*U,0,7);c.stroke();c.setLineDash([]);
+  c.fillStyle=col.muted;c.font='11px "IBM Plex Mono", monospace';c.fillText('500 u',cx+500*U*.72,cy-500*U*.72);
+  c.globalAlpha=.14;c.fillStyle=col.acc;c.beginPath();c.moveTo(cx,cy);c.arc(cx,cy,560*U,face-Math.PI/4,face+Math.PI/4);c.closePath();c.fill();c.globalAlpha=1;
+  const px=cx+Math.cos(ghost.a)*ghost.d*U,py=cy+Math.sin(ghost.a)*ghost.d*U,dx=px-cx,dy=py-cy,L=Math.hypot(dx,dy)||1;
+  const dot=Math.cos(face)*dx/L+Math.sin(face)*dy/L,ren=dot>Math.cos(Math.PI/4),sc=t-scareT<1100;
+  const ph=(t%1600)/1600;c.strokeStyle=col.muted;c.globalAlpha=.6*(1-ph);c.beginPath();c.arc(px,py,8+ph*36,0,7);c.stroke();c.globalAlpha=1;
+  c.globalAlpha=ren||sc?1:.3;const r=sc?20:11;c.fillStyle=col.ink;c.beginPath();c.arc(px,py,r,0,7);c.fill();
+  const ta=Math.atan2(cy-py,cx-px);c.fillStyle=col.bg;[-.45,.45].forEach(o=>{c.beginPath();c.arc(px+Math.cos(ta+o)*r*.5,py+Math.sin(ta+o)*r*.5,r*.16,0,7);c.fill();});c.globalAlpha=1;
+  c.fillStyle=col.acc;c.beginPath();c.arc(cx,cy,7,0,7);c.fill();c.strokeStyle=col.acc;c.lineWidth=2.5;c.beginPath();c.moveTo(cx,cy);c.lineTo(cx+Math.cos(face)*22,cy+Math.sin(face)*22);c.stroke();
+  if(sc){c.globalAlpha=.25*(1-(t-scareT)/1100);c.fillStyle=col.bad;c.fillRect(0,0,GW,GH);c.globalAlpha=1;}
+  $('#gDot').textContent=dot.toFixed(2);$('#gDist').textContent=Math.round(ghost.d)+' u';$('#gRen').textContent=ren?'yes':'no';
+  if(!sc&&ghost.hit){ghost={a:face+Math.PI+(Math.random()*1.6-.8),d:300+Math.random()*150};}
+  else if(!sc&&ghost.d<500&&ren&&dot>.7){scareT=t;ghost.hit=true;$('#gCount').textContent=++scares;gc.classList.remove('shake');void gc.offsetWidth;gc.classList.add('shake');}
+})(0);
+
+/* door */
+const door=$('#door'),key=$('#key3d');let hasKey=false,locked=true,open=false,moving=false,side=1,build='fixed',busy=false;
+function dl(m,c){const l=$('#doorLog'),d=document.createElement('div');if(c)d.className=c;d.textContent=m;l.prepend(d);while(l.children.length>4)l.lastChild.remove();}
+function rd(){$('#takeKey').disabled=hasKey||!locked;$('#floorkey').hidden=hasKey||!locked;$('#you').textContent='you: '+(side>0?'in front':'behind');}
+segs('side',b=>{side=+b.dataset.side;rd();});
+segs('build',b=>{build=b.dataset.build;dl(build==='old'?'Old build: UnlockDoor after Delay 0.3 s':'Fixed build: UnlockDoor on KeyAnim Finished');});
+$('#takeKey').onclick=()=>{hasKey=true;dl('BP_Key: add Key_Study, advance objective, destroy','good');rd();};
+function swing(){if(moving)return;moving=true;$('#handle').style.transform='rotate(-35deg)';
+  setTimeout(()=>{$('#handle').style.transform='';open=!open;door.style.transform=`rotateY(${open?(side>0?100:-100):0}deg)`;dl(open?`dot ${side>0?'> 0':'< 0'}: swing away from you`:'closing');setTimeout(()=>moving=false,1000);},250);}
+$('#useDoor').onclick=()=>{
+  if(moving||busy){dl('Is Moving: input ignored');return;}
+  if(!locked)return swing();
+  if(!hasKey){door.classList.remove('shake');void door.offsetWidth;door.classList.add('shake');dl('CheckForKey: no Key_Study, DoorShake','bad');return;}
+  busy=true;dl('CheckForKey: true, KeyAnim (slide 0.6 s, turn 0.6 s)');key.style.opacity=1;
+  const a=key.animate([{transform:'translateX(30px)'},{transform:'translateX(0)',offset:.5},{transform:'translateX(0) rotate(0)',offset:.5},{transform:'translateX(0) rotate(-90deg)'}],{duration:RM?200:1200,fill:'forwards',easing:'ease-in-out'});
+  if(build==='fixed')a.finished.then(()=>{key.style.opacity=0;a.cancel();locked=false;hasKey=false;busy=false;dl('KeyAnim Finished: hide key, UnlockDoor','good');rd();swing();});
+  else{setTimeout(()=>{locked=false;busy=false;dl('Delay done: UnlockDoor while the key is still turning','bad');rd();swing();},300);a.finished.then(()=>setTimeout(()=>{key.style.opacity=0;a.cancel();hasKey=false;rd();},400));}
+};
+$('#resetDoor').onclick=()=>{hasKey=false;locked=true;open=false;moving=false;busy=false;door.style.transform='';key.style.opacity=0;key.getAnimations().forEach(a=>a.cancel());dl('Reset');rd();};
+rd();
+
+/* lock */
+const CODE=[4,0,1,7],dg=[0,0,0,0];let focused=false,rot=false,unl=false;const W=$('#wheels');
+const strip=d=>[-2,-1,0,1,2].map(o=>`<span>${(d+o+10)%10}</span>`).join('');
+dg.forEach((d,i)=>{const b=document.createElement('button');b.className='wheel';b.disabled=true;b.setAttribute('aria-label',`Wheel ${i+1}: ${d}`);b.innerHTML=`<div class="strip">${strip(d)}</div>`;
+  b.onclick=e=>{const r=b.getBoundingClientRect();spin(i,e.clientY-r.top<r.height/2?1:-1);};
+  b.onkeydown=e=>{if(e.key==='ArrowUp'){spin(i,1);e.preventDefault()}if(e.key==='ArrowDown'){spin(i,-1);e.preventDefault()}};W.appendChild(b);});
+function spin(i,dir){if(!focused||rot||unl)return;rot=true;const w=W.children[i],s=w.firstChild;
+  s.animate([{transform:'translateY(-55px)'},{transform:`translateY(${-55-dir*22}px)`}],{duration:RM?60:220,easing:'ease-out'}).finished.then(()=>{dg[i]=(dg[i]+dir+10)%10;s.innerHTML=strip(dg[i]);w.setAttribute('aria-label',`Wheel ${i+1}: ${dg[i]}`);rot=false;if(dg.every((d,k)=>d===CODE[k]))unlock();});}
+function setFocus(on){focused=on;$('#lockscene').classList.toggle('focus',on);[...W.children].forEach(w=>w.disabled=!on||unl);$('#focusBtn').textContent=on?'Exit':'Inspect lock';
+  $('#lockState').textContent=on?'Camera blended to the lock. Top of a wheel turns it up, bottom turns it down.':'Wheels turn only while inspecting. Click the top or bottom of a wheel.';}
+$('#focusBtn').onclick=()=>setFocus(!focused);
+function unlock(){unl=true;[...W.children].forEach(w=>w.disabled=true);const p=$('#padlock');p.classList.add('open');$('#lockState').textContent='IsCodeCorrect: true, Unlock';
+  setTimeout(()=>{p.animate([{transform:'scale(1.12)',opacity:1},{transform:'translateY(30px) rotate(6deg)',opacity:1,offset:.3},{transform:'translateY(260px) rotate(24deg)',opacity:0}],{duration:RM?10:900,easing:'cubic-bezier(.5,0,.9,.6)',fill:'forwards'});$('#reward').classList.add('show');},450);}
+$('#relock').onclick=()=>{unl=false;dg.fill(0);[...W.children].forEach(w=>w.firstChild.innerHTML=strip(0));const p=$('#padlock');p.getAnimations().forEach(a=>a.cancel());p.classList.remove('open');$('#reward').classList.remove('show');setFocus(false);};
+$('#reveal').onclick=e=>{e.target.replaceWith(Object.assign(document.createElement('b'),{textContent:CODE.join(' ')}));};
+
+/* vault */
+const N=[['BP_Combination_Lock','BeginPlay: wheel pivots and padlock meshes'],['BP_Combination_Lock','EnterFocus and ExitFocus'],['BP_Combination_Lock','Focus: input mode, hide player mesh'],['BP_Combination_Lock','Interact: unlocked, focused and objective checks'],['BP_Combination_Lock','RotateSelected: digit math, modulo 10'],['BP_Combination_Lock','WheelSpin timeline, IsCodeCorrect, Unlock'],['BP_Combination_Lock','Unlock: collision, sound, visibility'],['BP_Combination_Lock','Bar slide, padlock physics, reward, objective'],['BP_Combination_Lock','Hit in local space picks spin direction'],['BP_Combination_Lock','Spin Wheel: mouse ray, line trace'],
+ ['BP_Baseinteractable','TryAdvanceObjective'],['BP_Baseinteractable','Sphere overlap to interaction component'],['BP_Baseinteractable','Hovered and unhovered: prompt and outline'],['BP_Baseinteractable','Highlight Outline: collect meshes'],['BP_Baseinteractable','Custom depth and stencil loop'],
+ ['BP_Key','Interact: add Key ID, advance objective, destroy'],
+ ['BP_Door','Open Close Logic: dot product picks swing side'],['BP_Door','Door timeline and rotation'],['BP_Door','Interact: locked check, CheckForKey'],['BP_Door','Auto Open Close and CheckKey'],['BP_Door','CheckKey: keys Contains Door Key ID'],['BP_Door','KeyAnim: UnlockDoor on Finished'],['BP_Door','RotationDoorHandle, UnlockDoor, DoorShake'],['BP_Door','DoorShake'],
+ ['BP_FirstPersonCharacter','Logic Sanity: 0.5 s tick'],['BP_FirstPersonCharacter','Sanity to saturation and vignette'],['BP_FirstPersonCharacter','Director_Jumpscare'],['BP_FirstPersonCharacter','Camera Logic: toggle and night vision'],['BP_FirstPersonCharacter','Camera on and off: widget, post process, FOV'],['BP_FirstPersonCharacter','Night vision reveals HiddenClue actors'],['BP_FirstPersonCharacter','TakePhoto: flash, cooldown, capture'],['BP_FirstPersonCharacter','Photo trace: Evidence and HiddenClue'],['BP_FirstPersonCharacter','Photographed rooms to objective'],['BP_FirstPersonCharacter','Zoom: FInterp To, FOV, sensitivity'],['BP_FirstPersonCharacter','Mouse wheel zoom input']];
+const IT=N.map(([c,n],i)=>{const k=String(i+1).padStart(2,'0');return{id:String(i+1),cls:c,name:n,src:`bp/bp${k}.webp`,th:`bp/bp${k}_t.webp`};});
+IT.push({id:'g1',cls:'BP_FakeGhostBack',name:'Check_PlayerStatus',src:'img/f_ghost.jpg',th:'img/f_ghost.jpg'},{id:'g2',cls:'BP_Baseinteractable',name:'Event graph',src:'img/f_interact.jpg',th:'img/f_interact.jpg'},{id:'g3',cls:'BP_Baseinteractable',name:'Highlight Outline: custom depth',src:'img/f_outline.jpg',th:'img/f_outline.jpg'},{id:'g4',cls:'BP_FirstPersonCharacter',name:'Logic Lantern',src:'img/f_lantern.jpg',th:'img/f_lantern.jpg'},{id:'g5',cls:'BP_FirstPersonCharacter',name:'Logic Sprint',src:'img/f_sprint.jpg',th:'img/f_sprint.jpg'},{id:'g6',cls:'Design',name:'Game Design Document',src:'img/f_gdd.jpg',th:'img/f_gdd.jpg'});
+const by=Object.fromEntries(IT.map(x=>[x.id,x]));
+$$('.graphs').forEach(g=>{const ids=g.dataset.graphs.split(','),l=ids.map(x=>by[x]);g.innerHTML=`<span class="label">Graph${ids.length>1?'s':''}</span>`;
+  l.forEach((it,i)=>{const b=document.createElement('button');b.textContent=it.name.split(':')[0];b.onclick=()=>openV(i,l);g.appendChild(b);});});
+$$('[data-open]').forEach(b=>b.onclick=()=>openV(0,[by[b.dataset.open]]));
+$$('[data-open-list]').forEach(b=>b.onclick=()=>openV(0,b.dataset.openList.split(',').map(x=>by[x])));
+const CL=['All','BP_FirstPersonCharacter','BP_Door','BP_Combination_Lock','BP_Baseinteractable','BP_Key','BP_FakeGhostBack'];let filt='All';
+function rv(){const l=IT.filter(x=>x.cls!=='Design'&&(filt==='All'||x.cls===filt));$('#vgrid').innerHTML='';
+  l.forEach((it,i)=>{const b=document.createElement('button');b.className='vcard';b.innerHTML=`<img src="${it.th}" alt="" loading="lazy"><span class="cls">${it.cls}</span><span class="nm">${it.name}</span>`;b.onclick=()=>openV(i,l);$('#vgrid').appendChild(b);});}
+CL.forEach(c=>{const n=IT.filter(x=>x.cls!=='Design'&&(c==='All'||x.cls===c)).length,b=document.createElement('button');b.innerHTML=`${c.replace('BP_','')}<span>${n}</span>`;b.setAttribute('aria-pressed',c===filt);b.onclick=()=>{filt=c;$$('#filters button').forEach(x=>x.setAttribute('aria-pressed',x===b));rv();};$('#filters').appendChild(b);});
+rv();
+
+/* viewer */
+const V=$('#viewer'),vc=$('#vcanvas'),vi=$('#vImg');let vl=[],vx=0,vs={s:1,x:0,y:0},lf=null;
+const ap=()=>{vi.style.transform=`translate(${vs.x}px,${vs.y}px) scale(${vs.s})`;$('#vZoom').textContent=Math.round(vs.s*100)+'%';};
+function fit(){const w=vc.clientWidth,h=vc.clientHeight,iw=vi.naturalWidth||1600,ih=vi.naturalHeight||800;vs.s=Math.min(w/iw,h/ih)*.96;vs.x=(w-iw*vs.s)/2;vs.y=(h-ih*vs.s)/2;ap();}
+function show(){const it=vl[vx];$('#vCls').textContent=it.cls;$('#vName').textContent=it.name;$('#vIdx').textContent=`${vx+1} / ${vl.length}`;vi.alt=it.cls+': '+it.name;vi.onload=fit;vi.src=it.src;if(vi.complete&&vi.naturalWidth)fit();
+  const one=vl.length<2;$('#vPrev').hidden=one;$('#vNext').hidden=one;}
+function openV(i,l){vl=l;vx=i;lf=document.activeElement;V.hidden=false;document.body.style.overflow='hidden';show();$('#vClose').focus();}
+function closeV(){V.hidden=true;document.body.style.overflow='';lf&&lf.focus();}
+function zat(f,px,py){const ns=clamp(vs.s*f,.1,4),k=ns/vs.s;vs.x=px-(px-vs.x)*k;vs.y=py-(py-vs.y)*k;vs.s=ns;ap();}
+$('#vClose').onclick=closeV;$('#vFit').onclick=fit;
+$('#vIn').onclick=()=>zat(1.25,vc.clientWidth/2,vc.clientHeight/2);$('#vOut').onclick=()=>zat(.8,vc.clientWidth/2,vc.clientHeight/2);
+$('#vPrev').onclick=()=>{vx=(vx-1+vl.length)%vl.length;show();};$('#vNext').onclick=()=>{vx=(vx+1)%vl.length;show();};
+vc.addEventListener('wheel',e=>{e.preventDefault();const r=vc.getBoundingClientRect();zat(e.deltaY<0?1.12:1/1.12,e.clientX-r.left,e.clientY-r.top);},{passive:false});
+const P=new Map();let p0=null;
+vc.addEventListener('pointerdown',e=>{vc.setPointerCapture(e.pointerId);P.set(e.pointerId,{x:e.clientX,y:e.clientY});vc.classList.add('drag');if(P.size===2){const[a,b]=[...P.values()];p0={d:Math.hypot(a.x-b.x,a.y-b.y),s:vs.s};}});
+vc.addEventListener('pointermove',e=>{if(!P.has(e.pointerId))return;const p=P.get(e.pointerId);if(P.size===1){vs.x+=e.clientX-p.x;vs.y+=e.clientY-p.y;ap();}
+  P.set(e.pointerId,{x:e.clientX,y:e.clientY});if(P.size===2&&p0){const[a,b]=[...P.values()],d=Math.hypot(a.x-b.x,a.y-b.y),r=vc.getBoundingClientRect();zat(p0.s*d/p0.d/vs.s,(a.x+b.x)/2-r.left,(a.y+b.y)/2-r.top);}});
+const up=e=>{P.delete(e.pointerId);if(P.size<2)p0=null;if(!P.size)vc.classList.remove('drag');};vc.addEventListener('pointerup',up);vc.addEventListener('pointercancel',up);
+addEventListener('resize',()=>{if(!V.hidden)fit();});
+addEventListener('keydown',e=>{if(V.hidden)return;if(e.key==='Escape')closeV();if(e.key==='ArrowRight')$('#vNext').click();if(e.key==='ArrowLeft')$('#vPrev').click();if(e.key==='+'||e.key==='=')$('#vIn').click();if(e.key==='-')$('#vOut').click();});
+
+/* email */
+$('#copyEmail').onclick=async()=>{let ok=false;try{await navigator.clipboard.writeText($('#email').textContent);ok=true;}catch(_){const r=document.createRange();r.selectNodeContents($('#email'));const s=getSelection();s.removeAllRanges();s.addRange(r);}$('#copyMsg').textContent=ok?'Copied':'Selected, press Ctrl+C';};
+})();
+</script>
+
+</body>
+</html>
