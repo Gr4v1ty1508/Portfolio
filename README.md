@@ -1,6 +1,6 @@
 # Tawan · Game Systems
 
-Portfolio site for Keerati "Tawan" Thakhieo, Technical Game Designer (Unreal Engine 5 Blueprint).
+Portfolio site for Keerati Thakhieo "Tawan" , Game Developer (Unreal Engine 5 Blueprint and Unity).
 
 Static site: `index.html` plus images in `img/` and Blueprint captures in `bp/`. No build step.
 
