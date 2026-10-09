@@ -79,6 +79,10 @@ section{padding-block:clamp(48px,7vw,88px);border-top:1px solid var(--line)}
 .reel:hover{border-color:var(--ink);transform:translateY(-2px)}
 .reel b{font-weight:600;font-size:17px;display:flex;justify-content:space-between}
 .reel b i{font-style:normal;color:var(--accent)}
+.reel{padding:0;overflow:hidden;background:var(--bg)}
+.reel img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-bottom:1px solid var(--line);background:#0c0c0c}
+.reel b,.reel span{margin-inline:16px}
+.reel b{margin-top:12px}.reel span{margin-bottom:14px}
 .reel span{font:13px var(--mono);color:var(--muted)}
 
 /* systems explorer */
@@ -133,6 +137,13 @@ section{padding-block:clamp(48px,7vw,88px);border-top:1px solid var(--line)}
 @keyframes fade{0%{opacity:1}100%{opacity:0}}
 @keyframes shake{0%,100%{transform:none}25%{transform:translate(-5px,3px)}50%{transform:translate(4px,-3px)}75%{transform:translate(-3px,-2px)}}
 
+/* lantern */
+.frame.lan img{display:block;width:100%;height:100%;object-fit:cover;filter:brightness(2.4) contrast(1.05)}
+.lmask{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at var(--lx,50%) var(--ly,88%),rgba(255,170,80,calc(var(--li,0)*.18)) 0,transparent calc(var(--lr,0px)*.55),rgba(0,0,0,.94) var(--lr,0px))}
+.bat{position:absolute;width:30px;height:16px;transform:translate(-50%,-50%);border:2px solid #d9d4c7;border-radius:3px;background:linear-gradient(90deg,#7ec850 0 60%,transparent 60%);cursor:pointer;padding:0;opacity:var(--bo,.15);transition:opacity .25s,transform .2s}
+.bat::after{content:"";position:absolute;right:-6px;top:3px;width:4px;height:6px;background:#d9d4c7;border-radius:0 1px 1px 0}
+.bat:hover{transform:translate(-50%,-50%) scale(1.15)}
+.bat[hidden]{display:none}
 /* ghost */
 #gc{width:100%;height:300px;display:block;border-radius:10px;border:1px solid var(--line);background:var(--surface);touch-action:pan-y;cursor:crosshair}
 #gc.shake{animation:shake .45s linear}
@@ -210,6 +221,8 @@ section{padding-block:clamp(48px,7vw,88px);border-top:1px solid var(--line)}
 .proj{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:16px 48px}
 .proj .imgs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .proj figure{margin:0;display:grid;gap:6px}
+.proj figure.wide{grid-column:1/-1}
+.proj video.loop{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#0c0c0c}
 .proj figure img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
 .proj figure.tall img{aspect-ratio:3/4}
 .proj figcaption{font-size:13px;color:var(--muted);line-height:1.4}
@@ -281,9 +294,9 @@ footer a{color:var(--muted)}
     <section id="reels">
       <div class="head"><h2>Gameplay reels</h2><p>Footage recorded from the builds. Opens on YouTube.</p></div>
       <div class="reels">
-        <a class="reel" href="https://youtu.be/xRh0HuQXBjs" target="_blank" rel="noopener"><b>Forgotten <i>↗</i></b><span>youtu.be/xRh0HuQXBjs</span></a>
-        <a class="reel" href="https://youtu.be/jQjqMY43B-U" target="_blank" rel="noopener"><b>The Quest of Soul Gem <i>↗</i></b><span>youtu.be/jQjqMY43B-U</span></a>
-        <a class="reel" href="https://youtu.be/9BOuBFFGONY" target="_blank" rel="noopener"><b>Back to the Ring <i>↗</i></b><span>youtu.be/9BOuBFFGONY</span></a>
+        <a class="reel" href="https://youtu.be/xRh0HuQXBjs" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/xRh0HuQXBjs/hqdefault.jpg" alt="" loading="lazy" width="480" height="270" onerror="this.remove()"><b>Forgotten <i>↗</i></b><span>youtu.be/xRh0HuQXBjs</span></a>
+        <a class="reel" href="https://youtu.be/jQjqMY43B-U" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/jQjqMY43B-U/hqdefault.jpg" alt="" loading="lazy" width="480" height="270" onerror="this.remove()"><b>The Quest of Soul Gem <i>↗</i></b><span>youtu.be/jQjqMY43B-U</span></a>
+        <a class="reel" href="https://youtu.be/9BOuBFFGONY" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/9BOuBFFGONY/hqdefault.jpg" alt="" loading="lazy" width="480" height="270" onerror="this.remove()"><b>Back to the Ring <i>↗</i></b><span>youtu.be/9BOuBFFGONY</span></a>
       </div>
     </section>
 
@@ -305,6 +318,7 @@ footer a{color:var(--muted)}
 
       <div class="tabs" role="tablist" aria-label="Systems">
         <button role="tab" id="t-cam" aria-controls="p-cam" aria-selected="true">Camcorder</button>
+        <button role="tab" id="t-lan" aria-controls="p-lan" aria-selected="false" tabindex="-1">Lantern</button>
         <button role="tab" id="t-san" aria-controls="p-san" aria-selected="false" tabindex="-1">Sanity</button>
         <button role="tab" id="t-ghost" aria-controls="p-ghost" aria-selected="false" tabindex="-1">Ghost</button>
         <button role="tab" id="t-door" aria-controls="p-door" aria-selected="false" tabindex="-1">Door &amp; key</button>
@@ -332,6 +346,32 @@ footer a{color:var(--muted)}
             <li>Rooms go into a set with <code>AddUnique</code>. When every required room is in, the objective advances.</li>
           </ul>
           <div class="graphs" data-graphs="28,29,30,31,32,33,34,35"></div>
+        </div>
+      </div>
+
+      <div class="panel" role="tabpanel" id="p-lan" aria-labelledby="t-lan" hidden>
+        <div class="demo">
+          <div class="frame lan" id="lanFrame"><img src="img/f_lantern_scene.jpg" alt="Lantern-lit test level in Forgotten" id="lanImg"><div class="lmask" id="lmask"></div>
+            <button class="bat" data-bat="0" style="left:18%;top:62%" aria-label="Battery pickup 1"></button>
+            <button class="bat" data-bat="1" style="left:71%;top:55%" aria-label="Battery pickup 2"></button>
+            <button class="bat" data-bat="2" style="left:44%;top:74%" aria-label="Battery pickup 3"></button>
+            <span class="fovtag" id="lanTag">LANTERN OFF</span>
+          </div>
+          <div class="meter"><div class="row"><span>battery · WBP_Battery</span><span id="batTxt">60%</span></div><div class="track"><div class="fill" id="batFill"></div></div></div>
+          <div class="controls"><button class="btn solid" id="lanToggle" aria-pressed="false">Toggle lantern (F)</button><button class="btn" id="lanReset">Respawn pickups</button><span class="muted" style="font-size:14px">Click a battery in the scene to interact.</span></div>
+          <div class="readout"><span>Is Lantern on <b id="lanOn">false</b></span><span>timer <b id="lanTimer">cleared</b></span><span>flicker <b id="lanFlick">no</b></span></div>
+          <div class="log" id="lanLog" aria-live="polite"><div>Press F or the button to light the lantern.</div></div>
+        </div>
+        <div class="txt">
+          <div class="label">BP_FirstPersonCharacter · Battery</div>
+          <h3>Light you have to ration</h3>
+          <ul>
+            <li><code>IA_ToggleLantern</code> branches on <code>Is Lantern on</code>. Turning off hides <code>LanternLight</code> and clears <code>Lantern Drain Timer</code>. Turning on only works with charge left, then starts a looping 0.1 s timer that calls <code>DainBattery</code>.</li>
+            <li>Under <code>Low Percent</code> the <code>FlickerLight Event</code> fires. At zero the light goes out and the timer is cleared.</li>
+            <li><code>Battery</code> pickups are children of <code>BP_Baseinteractable</code>: <code>Interact</code> adds charge, plays the pickup sound with <code>PlaySound2D</code> and destroys the actor.</li>
+          </ul>
+          <p class="label">Drain, pickup and low-battery values in the demo are example values.</p>
+          <div class="graphs" data-graphs="g4"></div>
         </div>
       </div>
 
@@ -433,7 +473,7 @@ footer a{color:var(--muted)}
       </div>
 
       <div class="also">
-        <div><div class="label">Lantern</div><p>Oil drains on a looping 0.1 s timer while lit; the flame flickers when low.</p><button data-open="g4">Open graph</button></div>
+        <div><div class="label">Light &amp; creepy zones</div><p>Sphere overlaps cast to the player. <code>BP_LightZone</code> sets <code>IsInSafeZone</code> and restarts the sanity timer; <code>BP_CreepyZone</code> sets <code>ZoneMultiplier</code> to speed up the drain.</p></div>
         <div><div class="label">Interaction</div><p>One base interactable, a Blueprint Interface and a custom-depth outline on hover.</p><button data-open-list="11,12,13,14,15,g2,g3">Open graphs</button></div>
         <div><div class="label">Sprint &amp; footsteps</div><p>Separate drain and regen timers; footsteps read the physical material underfoot.</p><button data-open="g5">Open graph</button></div>
         <div><div class="label">Design document</div><p>Core mechanics, level design and a 13-phase production plan.</p><button data-open="g6">Open page</button></div>
@@ -452,6 +492,7 @@ footer a{color:var(--muted)}
         <div class="proj">
           <div class="txt"><div class="label">Group project · VR · Unity</div><h3>Back to the Ring</h3><p>VR boxing against an AI opponent that moves on a NavMesh and picks from jabs, crosses, hooks, uppercuts and blocks. I wrote the gameplay scripts for Group.</p></div>
           <div class="imgs">
+            <figure class="wide"><video class="loop" poster="img/v_fight_poster.jpg" muted loop playsinline preload="none" aria-label="Back to the Ring gameplay: sparring the AI opponent, then a knockout"><source src="vid/v_fight.webm" type="video/webm"><source src="vid/v_fight.mp4" type="video/mp4"></video><figcaption>Gameplay, recorded in the headset · 14 s loop</figcaption></figure>
             <figure><img src="img/v_fight.jpg" alt="AI boxers in the ring" loading="lazy"><figcaption>AI opponents</figcaption></figure>
             <figure><img src="img/v_anim.jpg" alt="Animator state machine with punches and blocks" loading="lazy"><figcaption>Attack states</figcaption></figure>
             <figure><img src="img/v_menu.jpg" alt="World-space main menu in VR" loading="lazy"><figcaption>World-space menu</figcaption></figure>
@@ -663,6 +704,45 @@ vc.addEventListener('pointermove',e=>{if(!P.has(e.pointerId))return;const p=P.ge
 const up=e=>{P.delete(e.pointerId);if(P.size<2)p0=null;if(!P.size)vc.classList.remove('drag');};vc.addEventListener('pointerup',up);vc.addEventListener('pointercancel',up);
 addEventListener('resize',()=>{if(!V.hidden)fit();});
 addEventListener('keydown',e=>{if(V.hidden)return;if(e.key==='Escape')closeV();if(e.key==='ArrowRight')$('#vNext').click();if(e.key==='ArrowLeft')$('#vPrev').click();if(e.key==='+'||e.key==='=')$('#vIn').click();if(e.key==='-')$('#vOut').click();});
+
+/* lantern */
+{
+const fr=$('#lanFrame'),mk=$('#lmask'),fill=$('#batFill'),bt=$('#lanToggle'),lg=$('#lanLog'),bats=$$('#lanFrame .bat');
+const DRAIN=.4,ADD=35,LOW=20; // example values: % per 0.1 s tick, % per pickup, Low Percent
+let bat=60,on=false,timer=0,acc=0,lt=0,shown=0;
+const log=(m,c)=>{const d=document.createElement('div');d.textContent=m;if(c)d.className=c;lg.prepend(d);while(lg.children.length>6)lg.lastChild.remove();};
+function ui(){fill.style.width=bat+'%';fill.classList.toggle('low',bat<LOW);$('#batTxt').textContent=Math.ceil(bat)+'%';
+  $('#lanOn').textContent=on;$('#lanTimer').textContent=on?'looping 0.1 s':'cleared';$('#lanFlick').textContent=on&&bat<LOW?'yes':'no';
+  $('#lanTag').textContent=on?'LANTERN ON':'LANTERN OFF';bt.setAttribute('aria-pressed',on);}
+function toggle(){
+  if(on){on=false;log('IA_ToggleLantern → Is Lantern on = true → hide LanternLight, clear Lantern Drain Timer');}
+  else if(bat>0){on=true;log('IA_ToggleLantern → charge > 0 → show LanternLight, Set Timer by Event 0.1 s (DainBattery)','good');}
+  else log('IA_ToggleLantern → charge is 0, lantern stays off','bad');
+  ui();}
+bt.onclick=toggle;
+addEventListener('keydown',e=>{if((e.key==='f'||e.key==='F')&&!$('#p-lan').hidden&&!e.target.closest('input,textarea')&&!e.ctrlKey&&!e.metaKey){e.preventDefault();toggle();}});
+bats.forEach(b=>b.onclick=()=>{const before=bat;bat=Math.min(100,bat+ADD);b.hidden=true;
+  log(`Battery.Interact → +${ADD} (${Math.ceil(before)}% → ${Math.ceil(bat)}%), PlaySound2D Pickup, DestroyActor`,'good');ui();});
+$('#lanReset').onclick=()=>{bats.forEach(b=>b.hidden=false);log('Pickups respawned');};
+function frame(t){
+  const dt=Math.min((t-(lt||t))/1000,.1);lt=t;
+  if(on&&!$('#p-lan').hidden){acc+=dt;while(acc>=.1){acc-=.1;bat=Math.max(0,bat-DRAIN);
+    if(bat<=0){on=false;log('DainBattery → 0% → lantern out, timer cleared','bad');}}ui();}
+  // light radius follows charge; flicker under Low Percent
+  let tgt=on?(.35+.65*bat/100):0;
+  if(on&&bat<LOW&&!RM)tgt*=Math.random()<.12?.25:(.85+Math.random()*.15);
+  shown+=(tgt-shown)*(RM?1:.25);
+  const w=fr.clientWidth||600;
+  mk.style.setProperty('--lr',(shown*w*.75).toFixed(0)+'px');mk.style.setProperty('--li',shown.toFixed(3));
+  bats.forEach(b=>b.style.setProperty('--bo',(.12+shown*.88).toFixed(2)));
+  requestAnimationFrame(frame);}
+ui();requestAnimationFrame(frame);
+}
+
+/* video loops: play only on screen, never with reduced motion */
+{const vs=$$('video.loop');
+ if(!RM&&'IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting){v.preload='auto';v.play().catch(()=>{});}else v.pause();}),{threshold:.35});vs.forEach(v=>io.observe(v));}
+ else vs.forEach(v=>{v.controls=true;});}
 
 /* email */
 $('#copyEmail').onclick=async()=>{let ok=false;try{await navigator.clipboard.writeText($('#email').textContent);ok=true;}catch(_){const r=document.createRange();r.selectNodeContents($('#email'));const s=getSelection();s.removeAllRanges();s.addRange(r);}$('#copyMsg').textContent=ok?'Copied':'Selected, press Ctrl+C';};
