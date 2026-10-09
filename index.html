@@ -190,16 +190,24 @@ section{padding-block:clamp(48px,7vw,88px);border-top:1px solid var(--line)}
 .also button:hover{text-decoration:underline}
 
 /* vault */
-.filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
-.filters button{font:13px var(--sans);border:1px solid var(--line);background:transparent;color:var(--muted);padding:4px 11px;border-radius:999px;cursor:pointer}
-.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.filters button span{opacity:.6;margin-left:4px}
-.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px 14px}
-.vcard{display:grid;gap:8px;text-align:left;background:none;border:0;padding:0;cursor:zoom-in}
-.vcard img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;object-position:left top;border-radius:8px;border:1px solid var(--line);background:#1d1d1d;transition:transform .15s}
-.vcard:hover img{transform:translateY(-2px)}
+#blueprints{background:var(--bg);box-shadow:0 0 0 100vmax var(--bg);clip-path:inset(0 -100vmax)}
+.vgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 18px}
+.vcard{display:grid;gap:6px;align-content:start;text-align:left;background:none;border:0;padding:0;cursor:zoom-in;color:inherit}
+.vcard .stack{position:relative;margin-bottom:8px}
+.vcard .stack::before,.vcard .stack::after{content:"";position:absolute;inset:0;border-radius:8px;border:1px solid var(--line);background:var(--surface);transition:transform .2s}
+.vcard .stack::before{transform:translate(8px,-8px)}
+.vcard .stack::after{transform:translate(4px,-4px)}
+.vcard.one .stack::before,.vcard.one .stack::after{display:none}
+.vcard img{position:relative;z-index:1;display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:left top;border-radius:8px;border:1px solid var(--line);background:#1d1d1d;transition:transform .2s}
+.vcard .n{position:absolute;z-index:2;right:8px;bottom:8px;font:500 12px var(--mono);color:#fff;background:rgba(0,0,0,.65);padding:2px 8px;border-radius:999px}
+.vcard:hover img{transform:translate(-3px,3px)}
+.vcard:hover .stack::before{transform:translate(12px,-12px)}
+.vcard:hover .stack::after{transform:translate(6px,-6px)}
 .vcard .cls{font:12px var(--mono);color:var(--muted)}
-.vcard .nm{font-size:14px;line-height:1.35;margin-top:-4px}
+.vcard h3{font-size:18px}
+.vcard p{margin:0;font-size:14px;color:var(--muted);line-height:1.5}
+@media (max-width:860px){.vgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.vgrid{grid-template-columns:minmax(0,1fr)}}
 
 /* viewer */
 .viewer{position:fixed;inset:0;z-index:80;background:#151515;color:#EEE;display:grid;grid-template-rows:auto 1fr auto}
@@ -481,8 +489,7 @@ footer a{color:var(--muted)}
     </section>
 
     <section id="blueprints">
-      <div class="head"><h2>Blueprints</h2><p>Every graph from the systems above, grouped by class. Open one to drag, scroll or pinch around it like the editor.</p></div>
-      <div class="filters" id="filters" role="group" aria-label="Filter by class"></div>
+      <div class="head"><h2>Blueprints</h2><p>Every graph from the systems above, one set per class. Open a set and step through it with the arrows; drag, scroll or pinch like the editor.</p></div>
       <div class="vgrid" id="vgrid"></div>
     </section>
 
@@ -678,11 +685,17 @@ $$('.graphs').forEach(g=>{const ids=g.dataset.graphs.split(','),l=ids.map(x=>by[
   l.forEach((it,i)=>{const b=document.createElement('button');b.textContent=it.name.split(':')[0];b.onclick=()=>openV(i,l);g.appendChild(b);});});
 $$('[data-open]').forEach(b=>b.onclick=()=>openV(0,[by[b.dataset.open]]));
 $$('[data-open-list]').forEach(b=>b.onclick=()=>openV(0,b.dataset.openList.split(',').map(x=>by[x])));
-const CL=['All','BP_FirstPersonCharacter','BP_Door','BP_Combination_Lock','BP_Baseinteractable','BP_Key','BP_FakeGhostBack'];let filt='All';
-function rv(){const l=IT.filter(x=>x.cls!=='Design'&&(filt==='All'||x.cls===filt));$('#vgrid').innerHTML='';
-  l.forEach((it,i)=>{const b=document.createElement('button');b.className='vcard';b.innerHTML=`<img src="${it.th}" alt="" loading="lazy"><span class="cls">${it.cls}</span><span class="nm">${it.name}</span>`;b.onclick=()=>openV(i,l);$('#vgrid').appendChild(b);});}
-CL.forEach(c=>{const n=IT.filter(x=>x.cls!=='Design'&&(c==='All'||x.cls===c)).length,b=document.createElement('button');b.innerHTML=`${c.replace('BP_','')}<span>${n}</span>`;b.setAttribute('aria-pressed',c===filt);b.onclick=()=>{filt=c;$$('#filters button').forEach(x=>x.setAttribute('aria-pressed',x===b));rv();};$('#filters').appendChild(b);});
-rv();
+const SETS=[
+ ['BP_FirstPersonCharacter','The player','Camcorder, night vision, sanity, jumpscare director, lantern and sprint.','29'],
+ ['BP_Combination_Lock','Combination lock','Focus mode, wheel spin from a mouse trace, code check and the physics unlock.','6'],
+ ['BP_Door','Door & key','Swing side from a dot product, key check, handle animation and shake.','17'],
+ ['BP_Baseinteractable','Interactable base','Parent of every pickup: overlap, prompt, outline and objective step.','g2'],
+ ['BP_Key','Key','Adds its Key ID, advances the objective, destroys itself.','16'],
+ ['BP_FakeGhostBack','Ghost','Checks where the player is looking before it appears.','g1']];
+SETS.forEach(([c,t,d,cov])=>{const l=IT.filter(x=>x.cls===c);if(!l.length)return;const ci=Math.max(0,l.findIndex(x=>x.id===cov)),b=document.createElement('button');
+  b.className='vcard'+(l.length<2?' one':'');b.setAttribute('aria-label',`${t}: open ${l.length} graph${l.length>1?'s':''}`);
+  b.innerHTML=`<span class="stack"><img src="${l[ci].th}" alt="" loading="lazy"><span class="n">${l.length} graph${l.length>1?'s':''}</span></span><span class="cls">${c}</span><h3>${t}</h3><p>${d}</p>`;
+  b.onclick=()=>openV(0,l);$('#vgrid').appendChild(b);});
 
 /* viewer */
 const V=$('#viewer'),vc=$('#vcanvas'),vi=$('#vImg');let vl=[],vx=0,vs={s:1,x:0,y:0},lf=null;
